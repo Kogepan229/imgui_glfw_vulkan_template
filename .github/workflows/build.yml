@@ -5,11 +5,38 @@ jobs:
   build-windows:
     runs-on: windows-2022
     env:
-      VS_PATH: C:/Program Files/Microsoft Visual Studio/2022/Enterprise
+      LLVM-MINGW_VERSION: 20230614
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+
+      - name: Restore cache llvm-mingw
+        id: restore-cache-llvm-mingw
+        uses: actions/cache/restore@v3
+        with:
+          path: "C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64"
+          key: "${{ env.LLVM-MINGW_VERSION }}"
+
+      - name: Download llvm-mingw
+        if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
+        run: >
+          Invoke-WebRequest
+          -Uri https://github.com/mstorsjo/llvm-mingw/releases/download/${{ env.LLVM-MINGW_VERSION }}/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip
+          -OutFile C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip
+
+      - name: Unzip llvm-mingw
+        if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
+        run: |
+          Expand-Archive C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip C:/llvm-mingw
+          move C:/llvm-mingw/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64 C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64
+
+      - name: Cache llvm-mingw
+        if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v3
+        with:
+          path: "C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64"
+          key: "${{ env.LLVM-MINGW_VERSION }}"
 
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -23,7 +50,9 @@ jobs:
           cmake .
           -B build
           -G "Ninja"
-          -DCMAKE_MAKE_PROGRAM="${{ env.VS_PATH }}\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
+          -DCMAKE_C_COMPILER:FILEPATH="C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64/bin/clang.exe"
+          -DCMAKE_CXX_COMPILER:FILEPATH="C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64/bin/clang++.exe"
+          -DCMAKE_MAKE_PROGRAM="ninja"
 
       - name: Build
         run: |
