@@ -47,7 +47,7 @@ jobs:
       - name: Install Vulkan, Ninja
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvulkan-dev ninja
+          sudo apt-get install -y libvulkan-dev ninja-build
 
       - name: Run cmake
         run: >
