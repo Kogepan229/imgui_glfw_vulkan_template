@@ -1,0 +1,64 @@
+name: build
+on: push
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    env:
+      VS_PATH: C:/Program Files/Microsoft Visual Studio/2022/Enterprise
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.261.1
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+
+      - name: Run cmake
+        run: >
+          cmake .
+          -B build
+          -G "Ninja"
+          -DCMAKE_MAKE_PROGRAM="${{ env.VS_PATH }}\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
+
+      - name: Build
+        run: |
+          cd build
+          ninja
+
+  build-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install LLVM
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvulkan-dev ninja-build xorg-dev
+
+      - name: Run cmake
+        run: >
+          cmake .
+          -B build
+          -G "Ninja"
+          -DCMAKE_C_COMPILER="clang-17"
+          -DCMAKE_CXX_COMPILER="clang++-17"
+          -DCMAKE_MAKE_PROGRAM="ninja"
+
+      - name: Build
+        run: |
+          cd build
+          ninja
