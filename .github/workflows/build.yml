@@ -6,6 +6,8 @@ jobs:
     runs-on: windows-2022
     env:
       LLVM-MINGW_VERSION: 20230614
+      VULKAN_VERSION: 1.3.261.1
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -41,7 +43,7 @@ jobs:
       - name: Install Vulkan SDK
         uses: humbletim/setup-vulkan-sdk@v1.2.0
         with:
-          vulkan-query-version: 1.3.261.1
+          vulkan-query-version: ${{ env.VULKAN_VERSION }}
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
@@ -61,6 +63,8 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-22.04
+    env:
+      LLVM_VERSION: 17
 
     steps:
       - uses: actions/checkout@v3
@@ -71,7 +75,7 @@ jobs:
         run: |
           wget https://apt.llvm.org/llvm.sh
           chmod +x llvm.sh
-          sudo ./llvm.sh 17
+          sudo ./llvm.sh ${{ env.LLVM_VERSION }}
 
       - name: Install Dependencies
         run: |
@@ -83,8 +87,8 @@ jobs:
           cmake .
           -B build
           -G "Ninja"
-          -DCMAKE_C_COMPILER="clang-17"
-          -DCMAKE_CXX_COMPILER="clang++-17"
+          -DCMAKE_C_COMPILER="clang-${{ env.LLVM_VERSION }}"
+          -DCMAKE_CXX_COMPILER="clang++-${{ env.LLVM_VERSION }}"
           -DCMAKE_MAKE_PROGRAM="ninja"
 
       - name: Build
