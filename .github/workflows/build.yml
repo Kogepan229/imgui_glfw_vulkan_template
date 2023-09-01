@@ -44,10 +44,10 @@ jobs:
           chmod +x llvm.sh
           sudo ./llvm.sh 17
 
-      - name: Install Vulkan, Ninja
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libvulkan-dev ninja-build
+          sudo apt-get install -y libvulkan-dev ninja-build libxrandr-dev
 
       - name: Run cmake
         run: >
