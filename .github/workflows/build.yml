@@ -27,8 +27,9 @@ jobs:
 
       - name: Unzip llvm-mingw
         if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
-        run: >
-          Expand-Archive C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64
+        run: |
+          Expand-Archive C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip C:/llvm-mingw
+          move C:/llvm-mingw/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64 C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64
 
       - name: Cache llvm-mingw
         if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
