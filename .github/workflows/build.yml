@@ -44,6 +44,12 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
+      - name: Test
+        run: |
+          ls C:
+          ls C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64
+          ls C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64/bin
+
       - name: Run cmake
         run: >
           cmake .
