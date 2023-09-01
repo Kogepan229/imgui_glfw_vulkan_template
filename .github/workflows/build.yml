@@ -22,7 +22,7 @@ jobs:
         if: steps.restore-cache-llvm-mingw.outputs.cache-hit != 'true'
         run: >
           Invoke-WebRequest
-          -Url https://github.com/mstorsjo/llvm-mingw/releases/download/${{ env.LLVM-MINGW_VERSION }}/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip
+          -Uri https://github.com/mstorsjo/llvm-mingw/releases/download/${{ env.LLVM-MINGW_VERSION }}/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip
           -OutFile C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64.zip
 
       - name: Unzip llvm-mingw
