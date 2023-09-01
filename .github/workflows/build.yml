@@ -21,6 +21,7 @@ jobs:
       - name: Run cmake
         run: >
           cmake .
+          -B build
           -G "Ninja"
           -DCMAKE_MAKE_PROGRAM="${{ env.VS_PATH }}\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe"
 
