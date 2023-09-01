@@ -29,3 +29,36 @@ jobs:
         run: |
           cd build
           ninja
+
+  build-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install LLVM
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh
+
+      - name: Install Vulkan, Ninja
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libvulkan-dev ninja
+
+      - name: Run cmake
+        run: >
+          cmake .
+          -B build
+          -G "Ninja"
+          -DCMAKE_C_COMPILER="clang"
+          -DCMAKE_CXX_COMPILER="clang++"
+          -DCMAKE_MAKE_PROGRAM="ninja"
+
+      - name: Build
+        run: |
+          cd build
+          ninja
