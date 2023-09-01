@@ -55,6 +55,7 @@ jobs:
           -DCMAKE_C_COMPILER:FILEPATH="C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64/bin/clang.exe"
           -DCMAKE_CXX_COMPILER:FILEPATH="C:/llvm-mingw-${{ env.LLVM-MINGW_VERSION }}-ucrt-x86_64/bin/clang++.exe"
           -DCMAKE_MAKE_PROGRAM="ninja"
+          -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: |
