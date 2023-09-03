@@ -137,6 +137,11 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: test version.txt
+        run: |
+          ls -la
+          cat ./VERSION.txt
+
       - name: Check version
         id: check_version
         uses: salsify/action-detect-and-tag-new-version@v2
