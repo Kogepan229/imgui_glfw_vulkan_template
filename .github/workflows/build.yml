@@ -69,6 +69,7 @@ jobs:
         run: |
           ls
           ls ./build
+          ls ./build/src
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -117,6 +118,7 @@ jobs:
         run: |
           ls
           ls ./build
+          ls ./build/src
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
