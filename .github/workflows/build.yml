@@ -91,6 +91,7 @@ jobs:
           -DCMAKE_C_COMPILER="clang-${{ env.LLVM_VERSION }}"
           -DCMAKE_CXX_COMPILER="clang++-${{ env.LLVM_VERSION }}"
           -DCMAKE_MAKE_PROGRAM="ninja"
+          -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: |
