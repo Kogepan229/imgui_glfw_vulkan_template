@@ -130,7 +130,7 @@ jobs:
         uses: salsify/action-detect-and-tag-new-version@v2
         with:
           version-command: |
-            cat VERSION.txt
+            cat ./src/project_version.h | cut -d "\"" -f 2
           create-tag: false
 
       - name: Download artifacts

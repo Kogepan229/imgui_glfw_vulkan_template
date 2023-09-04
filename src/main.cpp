@@ -12,14 +12,19 @@
 #include <stdio.h>   // printf, fprintf
 #include <stdlib.h>  // abort
 
+#include <string>
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
+
 #define GLFW_INCLUDE_NONE
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 // #include <vulkan/vulkan_beta.h>
+
+#include "project_version.h"
 
 // [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and
 // compatibility with old VS compilers. To link with VS2010-era libraries, VS2015+ requires linking with
@@ -385,7 +390,9 @@ int main(int, char**) {
 
     // Create window with Vulkan context
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(
+        1280, 720, ("Dear ImGui GLFW+Vulkan example " + std::string(PROJECT_VERSION)).c_str(), nullptr, nullptr
+    );
     if (!glfwVulkanSupported()) {
         printf("GLFW: Vulkan Not Supported\n");
         return 1;
