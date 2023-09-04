@@ -140,6 +140,7 @@ jobs:
           path: ./artifacts
 
       - name: Rename files
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
         run: |
           cd ./artifacts
           mkdir x86_64-windows
@@ -148,6 +149,7 @@ jobs:
           mv ./${{ env.PROJECT_NAME }}-x86_64-linux       ./x86_64-linux/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}
 
       - name: Package files
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
         run: |
           cd ./artifacts
           zip --junk-paths ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./x86_64-windows
