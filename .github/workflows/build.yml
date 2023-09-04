@@ -1,6 +1,9 @@
 name: build
 on: push
 
+env:
+  PROJECT_NAME: imgui_glfw_vulkan_template
+
 jobs:
   build-windows:
     runs-on: windows-2022
@@ -62,6 +65,13 @@ jobs:
           cd build
           ninja
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PROJECT_NAME }}-x86_64-windows
+          path: ./build/src/${{ env.PROJECT_NAME }}.exe
+          if-no-files-found: error
+
   build-linux:
     runs-on: ubuntu-22.04
     env:
@@ -97,3 +107,62 @@ jobs:
         run: |
           cd build
           ninja
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PROJECT_NAME }}-x86_64-linux
+          path: ./build/src/${{ env.PROJECT_NAME }}
+          if-no-files-found: error
+
+  release:
+    runs-on: ubuntu-22.04
+    needs: [build-windows, build-linux]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+
+      - name: Check version
+        id: check_version
+        uses: salsify/action-detect-and-tag-new-version@v2
+        with:
+          version-command: |
+            cat VERSION.txt
+          create-tag: false
+
+      - name: Download artifacts
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        uses: actions/download-artifact@v3
+        with:
+          path: ./artifacts
+
+      - name: Package files
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        run: |
+          cd ./artifacts
+          zip -r ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./${{ env.PROJECT_NAME }}-x86_64-windows
+          tar -zcvf ${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz ./${{ env.PROJECT_NAME }}-x86_64-linux
+
+      - name: Create tag
+        id: create_tag
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          custom_tag: ${{ steps.check_version.outputs.current-version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a GitHub release
+        id: create_release
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.create_tag.outputs.new_tag }}
+          name: Release ${{ steps.create_tag.outputs.new_tag }}
+          body: ${{ steps.create_tag.outputs.changelog }}
+          artifacts:
+            "./artifacts/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip,
+            ./artifacts/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz"
+          makeLatest: "latest"
