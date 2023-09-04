@@ -139,32 +139,12 @@ jobs:
         with:
           path: ./artifacts
 
-      - name: test
-        run: |
-          ls -la ./artifacts
-          ls -la ./artifacts/${{ env.PROJECT_NAME }}-x86_64-windows
-          ls -la ./artifacts/${{ env.PROJECT_NAME }}-x86_64-linux
-
-      # - name: Rename files
-      #   if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
-      #   run: |
-      #     cd ./artifacts
-      #     mkdir x86_64-windows
-      #     mkdir x86_64-linux
-      #     mv ./${{ env.PROJECT_NAME }}-x86_64-windows/${{ env.PROJECT_NAME }}.exe ./x86_64-windows/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.exe
-      #     mv ./${{ env.PROJECT_NAME }}-x86_64-linux/${{ env.PROJECT_NAME }}       ./x86_64-linux/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}
-
       - name: Package files
         if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
         run: |
           cd ./artifacts
           zip -r ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./${{ env.PROJECT_NAME }}-x86_64-windows
           tar -zcvf ${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz ./${{ env.PROJECT_NAME }}-x86_64-linux
-
-      - name: test
-        run: |
-          ls -la ./
-          ls -la ./artifacts
 
       - name: Create tag
         id: create_tag
