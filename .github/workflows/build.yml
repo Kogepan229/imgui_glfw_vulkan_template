@@ -137,12 +137,12 @@ jobs:
         if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
         uses: actions/download-artifact@v3
         with:
-          path: /artifacts
+          path: ./artifacts
 
       - name: test
         run: |
-          ls -la /
-          ls -la /artifacts
+          ls -la ./
+          ls -la ./artifacts
 
       # - name: Create tag
       #   id: create_tag
