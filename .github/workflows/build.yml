@@ -149,6 +149,8 @@ jobs:
           cd ./artifacts
           mkdir x86_64-windows
           mkdir x86_64-linux
+          mv ${{ env.PROJECT_NAME }}-x86_64-windows ${{ env.PROJECT_NAME }}-x86_64-windows.zip
+          mv ${{ env.PROJECT_NAME }}-x86_64-linux   ${{ env.PROJECT_NAME }}-x86_64-linux.zip
           unzip ${{ env.PROJECT_NAME }}-x86_64-windows.zip
           unzip ${{ env.PROJECT_NAME }}-x86_64-linux.zip
           mv ./${{ env.PROJECT_NAME }}-x86_64-windows/${{ env.PROJECT_NAME }}.exe ./x86_64-windows/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.exe
