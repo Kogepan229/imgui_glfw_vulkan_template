@@ -68,7 +68,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.PROJECT_NAME }}-x86_64-windows.exe
+          name: ${{ env.PROJECT_NAME }}-x86_64-windows.zip
           path: ./build/src/${{ env.PROJECT_NAME }}.exe
           if-no-files-found: error
 
@@ -111,7 +111,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.PROJECT_NAME }}-x86_64-linux
+          name: ${{ env.PROJECT_NAME }}-x86_64-linux.zip
           path: ./build/src/${{ env.PROJECT_NAME }}
           if-no-files-found: error
 
@@ -145,8 +145,10 @@ jobs:
           cd ./artifacts
           mkdir x86_64-windows
           mkdir x86_64-linux
-          mv ./${{ env.PROJECT_NAME }}-x86_64-windows.exe ./x86_64-windows/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.exe
-          mv ./${{ env.PROJECT_NAME }}-x86_64-linux       ./x86_64-linux/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}
+          unzip ${{ env.PROJECT_NAME }}-x86_64-windows.zip
+          unzip ${{ env.PROJECT_NAME }}-x86_64-linux.zip
+          mv ./${{ env.PROJECT_NAME }}-x86_64-windows/${{ env.PROJECT_NAME }}.exe ./x86_64-windows/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.exe
+          mv ./${{ env.PROJECT_NAME }}-x86_64-linux/${{ env.PROJECT_NAME }}       ./x86_64-linux/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}
 
       - name: Package files
         if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
