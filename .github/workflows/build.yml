@@ -158,7 +158,7 @@ jobs:
         if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
         run: |
           cd ./artifacts
-          zip --junk-paths ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./${{ env.PROJECT_NAME }}-x86_64-windows
+          zip -r ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./${{ env.PROJECT_NAME }}-x86_64-windows
           tar -zcvf ${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz ./${{ env.PROJECT_NAME }}-x86_64-linux
 
       - name: test
