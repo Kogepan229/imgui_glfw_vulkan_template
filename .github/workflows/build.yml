@@ -139,6 +139,20 @@ jobs:
         with:
           path: ./artifacts
 
+      - name: Rename files
+        run: |
+          cd ./artifacts
+          mkdir x86_64-windows
+          mkdir x86_64-linux
+          mv ./${{ env.PROJECT_NAME }}-x86_64-windows.exe ./x86_64-windows/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.exe
+          mv ./${{ env.PROJECT_NAME }}-x86_64-linux       ./x86_64-linux/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}
+
+      - name: Package files
+        run: |
+          cd ./artifacts
+          zip --junk-paths ${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip ./x86_64-windows
+          tar -zcvf ${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz ./x86_64-linux
+
       - name: test
         run: |
           ls -la ./
