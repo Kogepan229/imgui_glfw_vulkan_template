@@ -118,7 +118,7 @@ jobs:
   release:
     runs-on: ubuntu-22.04
     needs: [build-windows, build-linux]
-    # todo: only main branch
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
