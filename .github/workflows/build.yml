@@ -166,20 +166,23 @@ jobs:
           ls -la ./
           ls -la ./artifacts
 
-      # - name: Create tag
-      #   id: create_tag
-      #   if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
-      #   uses: mathieudutour/github-tag-action@v6.1
-      #   with:
-      #     custom_tag: ${{ steps.check_version.outputs.current-version }}
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create tag
+        id: create_tag
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          custom_tag: ${{ steps.check_version.outputs.current-version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Create a GitHub release
-      #   id: create_release
-      #   if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     tag: ${{ steps.create_tag.outputs.new_tag }}
-      #     name: Release ${{ steps.create_tag.outputs.new_tag }}
-      #     body: ${{ steps.create_tag.outputs.changelog }}
-      #     makeLatest: "latest"
+      - name: Create a GitHub release
+        id: create_release
+        if: ${{ steps.check_version.outputs.previous-version != steps.check_version.outputs.current-version }}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.create_tag.outputs.new_tag }}
+          name: Release ${{ steps.create_tag.outputs.new_tag }}
+          body: ${{ steps.create_tag.outputs.changelog }}
+          artifacts:
+            "./artifacts/${{ env.PROJECT_NAME }}-x86_64-windows-${{steps.check_version.outputs.current-version}}.zip,
+            ./artifacts/${{ env.PROJECT_NAME }}-x86_64-linux-${{steps.check_version.outputs.current-version}}.tar.gz"
+          makeLatest: "latest"
